@@ -1,5 +1,7 @@
 #pragma once
+#include <vector>
 #include <SDL.h>
+
 class InputManager
 {
 public:
@@ -10,7 +12,8 @@ public:
 	void Update();
 	
 private:
-	SDL_Event* key_event;
 	int KEYS[290];
+	std::vector<SDL_Keycode> key_up;
+	std::vector<SDL_Keycode> key_down;
 };
 

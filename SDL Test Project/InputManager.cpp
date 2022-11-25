@@ -1,8 +1,7 @@
 #include "InputManager.h"
 
-InputManager::InputManager() : key_event(nullptr)
+InputManager::InputManager()
 {
-	key_event = new SDL_Event();
 	for (int i = 0; i < 290; i++)
 	{
 		KEYS[i] = 0;
@@ -11,62 +10,42 @@ InputManager::InputManager() : key_event(nullptr)
 
 bool InputManager::GetKeyUp(SDL_Keycode key)
 {
-	
-	switch (key_event->type)
-	{
-	case SDL_KEYUP:
-		if (key_event->key.keysym.sym == key)
-		{
-			return true;
-		}
-
-	default:
-		return false;
-	}
-	
+	return std::find(key_up.begin(), key_up.end(), key) != key_up.end();
 }
 
 bool InputManager::GetKeyHeld(SDL_Keycode key)
 {	
 	SDL_Scancode scancode = SDL_GetScancodeFromKey(key);
 
-	if (KEYS[scancode] == 1)
-	{
-		return true;
-	}
-	
-	return false;
+	return KEYS[scancode] == 1;
 }
 
 bool InputManager::GetKeyDown(SDL_Keycode key)
 {
-	switch (key_event->type)
-	{
-	case SDL_KEYDOWN:
-		if (key_event->key.keysym.sym == key)
-		{
-			return true;
-		}
-
-	default:
-		return false;
-	}
-	
+	return std::find(key_down.begin(), key_down.end(), key) != key_down.end();
 }
 
 void InputManager::Update()
 {
-	SDL_PollEvent(key_event);
+	SDL_Event temp_event;
 	
-	switch (key_event->type)
+	key_up.clear();
+	key_down.clear();
+
+	while (SDL_PollEvent(&temp_event))
 	{
-	case SDL_KEYDOWN:
-	{
-		KEYS[key_event->key.keysym.scancode] = 1;
-	}
-	case SDL_KEYUP:
-	{
-		KEYS[key_event->key.keysym.scancode] = 0;
-	}
+		switch (temp_event.type)
+		{
+		case SDL_KEYDOWN:
+		{
+			KEYS[temp_event.key.keysym.scancode] = 1;
+			key_down.push_back(temp_event.key.keysym.sym);
+		}
+		case SDL_KEYUP:
+		{
+			KEYS[temp_event.key.keysym.scancode] = 0;
+			key_up.push_back(temp_event.key.keysym.sym);
+		}
+		}
 	}
 }

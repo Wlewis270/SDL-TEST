@@ -1,13 +1,17 @@
 #pragma once
-#include "InputManager.h"
-#include "StarScape.h"
-#include <SDL.h>
+
+class InputManager;
+class Visualisation;
+class SDL_Window;
+class SDL_Renderer;
+class SDL_Rect;
+
 
 class Game
 {
 public:
 	void Update();
-	void Render(int r,int b,int g);
+	void Render();
 	bool IsGameRunning();
 	void Initialise();
 	void Uninitialise();
@@ -15,7 +19,9 @@ public:
 private:
 	SDL_Window* game_window;
 	SDL_Renderer* game_renderer;
-	InputManager* game_inputmanager = new InputManager;
-	StarScape* game_starscape;
+	InputManager* game_inputmanager;
+	Visualisation* game_visualisation;
+	SDL_Rect* game_rect;
+	int image_id;
 };
 
