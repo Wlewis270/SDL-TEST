@@ -10,6 +10,7 @@ class SDL_Rect;
 class Game
 {
 public:
+	static Game* Get();
 	void Update();
 	void Render();
 	bool IsGameRunning();
@@ -17,11 +18,14 @@ public:
 	void Uninitialise();
 
 private:
+	Game();
+	Game(const Game&);
+	static Game* s_instance;
 	SDL_Window* game_window;
 	SDL_Renderer* game_renderer;
 	InputManager* game_inputmanager;
 	Visualisation* game_visualisation;
-	SDL_Rect* game_rect;
-	int image_id;
+	SDL_Rect* player_rect;
+	int player_image_id;
 };
 

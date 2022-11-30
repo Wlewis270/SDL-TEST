@@ -3,6 +3,17 @@
 #include "Visualisation.h"
 #include "InputManager.h"
 
+Game* Game::s_instance = nullptr;
+
+Game* Game::Get()
+{
+	if (s_instance = nullptr)
+	{
+		Game* s_instance = new Game;
+		return s_instance;
+	}
+}
+
 void Game::Update()
 {
 	game_inputmanager->Update();
@@ -12,12 +23,36 @@ void Game::Update()
 		Uninitialise();
 		SDL_Quit();
 	}
+
+	if (game_inputmanager->GetKeyHeld(SDLK_RIGHT))
+	{
+		player_rect->x = player_rect->x + 1;
+	}
+
+	if (game_inputmanager->GetKeyHeld(SDLK_LEFT))
+	{
+		player_rect->x = player_rect->x - 1;
+	}
+
+	if (game_inputmanager->GetKeyHeld(SDLK_UP))
+	{
+		player_rect->y = player_rect->y - 1;
+	}
+
+	if (game_inputmanager->GetKeyHeld(SDLK_DOWN))
+	{
+		player_rect->y = player_rect->y + 1;
+	}
+
+	Render();
 }
 
 void Game::Render()
 {
 	SDL_RenderClear(game_renderer);
-	game_visualisation->DrawImage(image_id, game_rect);
+	
+	game_visualisation->DrawImage(player_image_id, player_rect);
+	
 	SDL_RenderPresent(game_renderer);
 }
 
@@ -43,14 +78,16 @@ void Game::Initialise()
 	
 	game_visualisation = new Visualisation(game_renderer);
 
-	game_rect = new SDL_Rect;
+	player_rect = new SDL_Rect;
 	
-	game_rect->x = 100;
-	game_rect->y = 100;
-	game_rect->w = 64;
-	game_rect->h = 64;
+	player_rect->x = 100;
+	player_rect->y = 100;
+	player_rect->w = 64;
+	player_rect->h = 64;
 
-	image_id = game_visualisation->AddImage(".\\bitmaps\\testimage.bmp");
+	player_image_id = game_visualisation->AddImage(".\\bitmaps\\testimage.bmp");
+
+
 
 	Render();
 }
@@ -60,4 +97,5 @@ void Game::Uninitialise()
 	SDL_DestroyRenderer(game_renderer);
 	SDL_DestroyWindow(game_window);
 	delete game_visualisation;
+	delete player_rect;
 }

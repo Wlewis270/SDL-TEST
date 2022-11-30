@@ -4,7 +4,8 @@
 
 int main(int argc, char* argv[])
 {
-	Game* game = new Game();
+	Game* game = Game::Get();
+
 	game->Initialise();
 	while (game->IsGameRunning() == true)
 	{
