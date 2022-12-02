@@ -2,46 +2,38 @@
 #include <iostream>
 #include "Visualisation.h"
 #include "InputManager.h"
+#include "Player.h"
+#include "Block.h"
 
 Game* Game::s_instance = nullptr;
 
 Game* Game::Get()
 {
-	if (s_instance = nullptr)
+	if (s_instance == nullptr)
 	{
 		Game* s_instance = new Game;
 		return s_instance;
 	}
+
+	return s_instance;
 }
 
 void Game::Update()
 {
 	game_inputmanager->Update();
+	game_player->Update();
+	
+	if (CheckCollisions(game_player) == "Block")
+	{
+		SDL_SetRenderDrawColor(game_renderer, 0, 255, 0, 255);
+	}
 
 	if (game_inputmanager->GetKeyDown(SDLK_ESCAPE))
 	{
 		Uninitialise();
 		SDL_Quit();
-	}
-
-	if (game_inputmanager->GetKeyHeld(SDLK_RIGHT))
-	{
-		player_rect->x = player_rect->x + 1;
-	}
-
-	if (game_inputmanager->GetKeyHeld(SDLK_LEFT))
-	{
-		player_rect->x = player_rect->x - 1;
-	}
-
-	if (game_inputmanager->GetKeyHeld(SDLK_UP))
-	{
-		player_rect->y = player_rect->y - 1;
-	}
-
-	if (game_inputmanager->GetKeyHeld(SDLK_DOWN))
-	{
-		player_rect->y = player_rect->y + 1;
+		gamerunning = false;
+		return;
 	}
 
 	Render();
@@ -51,18 +43,27 @@ void Game::Render()
 {
 	SDL_RenderClear(game_renderer);
 	
-	game_visualisation->DrawImage(player_image_id, player_rect);
-	
+	SDL_SetRenderDrawColor(game_renderer, 0, 0, 255, 255);
+
+	for (int i = 0; i < 3; i++)
+	{
+		game_block[i]->Render();
+	}
+	game_player->Render();
 	SDL_RenderPresent(game_renderer);
+
+	SDL_Delay(1000 / 60);
 }
 
 bool Game::IsGameRunning()
 {
-    return true;
+	return gamerunning == true;
 }
 
 void Game::Initialise()
 {
+	gamerunning = true;
+	
 	if (SDL_Init(SDL_INIT_EVERYTHING != 0))
 	{
 		std::cout << "SDL Init failed";
@@ -75,19 +76,17 @@ void Game::Initialise()
 	game_renderer = SDL_CreateRenderer(game_window, -1, 0);
 
 	game_inputmanager = new InputManager;
-	
-	game_visualisation = new Visualisation(game_renderer);
 
-	player_rect = new SDL_Rect;
-	
-	player_rect->x = 100;
-	player_rect->y = 100;
-	player_rect->w = 64;
-	player_rect->h = 64;
+	game_visualisation = Visualisation::Initialise(game_renderer);
 
-	player_image_id = game_visualisation->AddImage(".\\bitmaps\\testimage.bmp");
+	game_player = new Player(game_inputmanager);
+	game_player->Initialise();
 
-
+	for (int i = 0; i < 3; i++)
+	{
+		game_block[i] = new Block;
+		game_block[i]->Initialise();
+	}
 
 	Render();
 }
@@ -96,6 +95,81 @@ void Game::Uninitialise()
 {
 	SDL_DestroyRenderer(game_renderer);
 	SDL_DestroyWindow(game_window);
-	delete game_visualisation;
-	delete player_rect;
+	game_player->Uninitialise();
+	
+	delete game_player;
+	
+	delete game_inputmanager;
+	
+	for (int i = 0; i < 3; i++)
+	{
+		game_block[i]->Uninitialise();
+	}
+	
+	for (int i = 0; i < 3; i++)
+	{
+		delete game_block[i];
+	}
+}
+
+std::string Game::CheckCollisions(Player* player)
+{	
+	bool collision_checked = false;
+
+	game_player_rect = player->GetLocation();
+	
+	while (collision_checked == false)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			game_block_rect = game_block[i]->GetLocation();
+
+			if (TestCollision(player, game_block[i]) == true)
+			{
+				return game_block[i]->Getname();
+			}
+		}
+		return "";
+	}
+}
+
+
+bool Game::TestCollision(Player* player, Block* block)
+{
+	int playerminX = game_player_rect->x;
+	int playerminY = game_player_rect->y;
+	int playermaxX = game_player_rect->x + game_player_rect->w;
+	int playermaxY = game_player_rect->y + game_player_rect->h;
+	
+	int blockminX = game_block_rect->x;
+	int blockminY = game_block_rect->y;
+	int blockmaxX = game_block_rect->x + game_block_rect->w;
+	int blockmaxY = game_block_rect->y + game_block_rect->h;
+
+	if (playerminY > blockmaxY)
+	{
+		return false;
+	}
+
+	if (playermaxY < blockminY)
+	{
+		return false;
+	}
+
+	if (blockminX > playermaxX)
+	{
+		return false;
+	}
+
+	if (blockmaxX < playerminX)
+	{
+		return false;
+	}
+
+	return true;
+	
+}
+
+Game::Game()
+{
 }

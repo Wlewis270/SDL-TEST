@@ -6,7 +6,7 @@ InputManager::InputManager()
 	{
 		KEYS[i] = 0;
 	}
-}
+}	
 
 bool InputManager::GetKeyUp(SDL_Keycode key)
 {
@@ -50,4 +50,5 @@ void InputManager::Update()
 		}
 		}
 	}
+	
 }
