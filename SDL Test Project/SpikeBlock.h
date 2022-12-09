@@ -3,12 +3,13 @@
 
 class SDL_Rect;
 class Visualisation;
+class InputManager;
 class SDL_Renderer;
 
-class Block
+class SpikeBlock
 {
 public:
-	Block();
+	SpikeBlock();
 	std::string Getname();
 	void Initialise();
 	void Uninitialise();
@@ -17,7 +18,7 @@ public:
 	SDL_Rect* GetLocation();
 private:
 	int image_id;
-	SDL_Rect* block_rect;
-	Visualisation* block_visualisation = nullptr;
+	SDL_Rect* spike_block_rect;
+	Visualisation* spike_block_visualisation = nullptr;
 };
 

@@ -72,7 +72,29 @@ void Player::Update()
 		player_rect->x = playerX;
 		player_rect->y = playerY;
 	}
-	
+
+	if (player_collision == "Spike block")
+	{
+		if (player_rect->x = playerX + 5)
+		{
+			player_rect->x = player_rect->x - 10;
+		}
+
+		if (player_rect->x = playerX - 5)
+		{
+			player_rect->x = player_rect->x + 10;
+		}
+
+		if (player_rect->y = playerY + 5)
+		{
+			player_rect->y = player_rect->y - 10;
+		}
+
+		if (player_rect->y = playerY - 5)
+		{
+			player_rect->y = player_rect->y + 10;
+		}
+	}
 }
 
 

@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "Player.h"
 #include "Block.h"
+#include "SpikeBlock.h"
 
 Game* Game::s_instance = nullptr;
 
@@ -44,6 +45,12 @@ void Game::Render()
 	{
 		game_block[i]->Render();
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		game_spike_block[i]->Render();
+	}
+
 	game_player->Render();
 	SDL_RenderPresent(game_renderer);
 
@@ -83,6 +90,12 @@ void Game::Initialise()
 		game_block[i]->Initialise();
 	}
 
+	for (int i = 0; i < 3; i++)
+	{
+		game_spike_block[i] = new SpikeBlock;
+		game_spike_block[i]->Initialise();
+	}
+
 	Render();
 }
 
@@ -105,6 +118,16 @@ void Game::Uninitialise()
 	{
 		delete game_block[i];
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		game_spike_block[i]->Uninitialise();
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		delete game_spike_block[i];
+	}
 }
 
 std::string Game::CheckCollisions(Player* player)
@@ -119,9 +142,18 @@ std::string Game::CheckCollisions(Player* player)
 		{
 			game_block_rect = game_block[i]->GetLocation();
 
-			if (TestCollision(player, game_block[i]) == true)
+			if (TestBlockCollision(player, game_block[i]) == true)
 			{
 				return game_block[i]->Getname();
+			}
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			game_spike_block_rect = game_spike_block[i]->GetLocation();
+
+			if (TestSpikeBlockCollision(player, game_spike_block[i]) == true)
+			{
+				return game_spike_block[i]->Getname();
 			}
 		}
 		return "";
@@ -129,7 +161,7 @@ std::string Game::CheckCollisions(Player* player)
 }
 
 
-bool Game::TestCollision(Player* player, Block* block)
+bool Game::TestBlockCollision(Player* player, Block* block)
 {
 	int playerminX = game_player_rect->x;
 	int playerminY = game_player_rect->y;
@@ -163,6 +195,41 @@ bool Game::TestCollision(Player* player, Block* block)
 
 	return true;
 	
+}
+
+bool Game::TestSpikeBlockCollision(Player* player, SpikeBlock* spiked_block)
+{
+	int playerminX = game_player_rect->x;
+	int playerminY = game_player_rect->y;
+	int playermaxX = game_player_rect->x + game_player_rect->w;
+	int playermaxY = game_player_rect->y + game_player_rect->h;
+
+	int blockminX = game_spike_block_rect->x;
+	int blockminY = game_spike_block_rect->y;
+	int blockmaxX = game_spike_block_rect->x + game_spike_block_rect->w;
+	int blockmaxY = game_spike_block_rect->y + game_spike_block_rect->h;
+
+	if (playerminY > blockmaxY)
+	{
+		return false;
+	}
+
+	if (playermaxY < blockminY)
+	{
+		return false;
+	}
+
+	if (blockminX > playermaxX)
+	{
+		return false;
+	}
+
+	if (blockmaxX < playerminX)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 Game::Game()
