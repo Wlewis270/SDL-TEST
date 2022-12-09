@@ -11,7 +11,7 @@ Game* Game::Get()
 {
 	if (s_instance == nullptr)
 	{
-		Game* s_instance = new Game;
+		s_instance = new Game;
 		return s_instance;
 	}
 
@@ -22,11 +22,6 @@ void Game::Update()
 {
 	game_inputmanager->Update();
 	game_player->Update();
-	
-	if (CheckCollisions(game_player) == "Block")
-	{
-		SDL_SetRenderDrawColor(game_renderer, 0, 255, 0, 255);
-	}
 
 	if (game_inputmanager->GetKeyDown(SDLK_ESCAPE))
 	{

@@ -6,6 +6,7 @@ class Visualisation;
 class InputManager;
 class SDL_Renderer;
 class Block;
+class Game;
 
 class Player
 {
@@ -22,5 +23,6 @@ private:
 	SDL_Rect* player_rect;
 	InputManager* player_input_manager;
 	Visualisation* player_visualisation = nullptr;
+	Game* player_game = nullptr;
 };
 
