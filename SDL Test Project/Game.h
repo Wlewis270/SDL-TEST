@@ -9,6 +9,7 @@ class SDL_Rect;
 class Player;
 class Block;
 class SpikeBlock;
+class Entity;
 
 class Game
 {
@@ -19,9 +20,8 @@ public:
 	bool IsGameRunning();
 	void Initialise();
 	void Uninitialise();
-	std::string CheckCollisions(Player* player);
-	bool TestBlockCollision(Player* player, Block* block);
-	bool TestSpikeBlockCollision(Player* player, SpikeBlock* spiked_block);
+	std::string CheckCollisions(Entity* player);
+	bool TestBlockCollision(Entity* player, Entity* Ent);
 
 private:
 	Game();

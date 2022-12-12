@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Entity.h"
 
 class SDL_Rect;
 class Visualisation;
@@ -8,21 +9,18 @@ class SDL_Renderer;
 class Block;
 class Game;
 
-class Player
+class Player : public Entity
 {
 public:
 	Player(InputManager* im);
 	std::string Getname();
 	void Initialise();
-	void Uninitialise();
-	void Render();
 	void Update();
-	SDL_Rect* GetLocation();
 private:
 	int image_id;
-	SDL_Rect* player_rect;
-	InputManager* player_input_manager;
-	Visualisation* player_visualisation = nullptr;
-	Game* player_game = nullptr;
+	SDL_Rect* ent_rect;
+	Visualisation* ent_visualisation = nullptr;
+	InputManager* ent_input_manager;
+	Game* ent_game = nullptr;
 };
 

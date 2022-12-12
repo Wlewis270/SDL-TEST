@@ -1,20 +1,21 @@
 #pragma once
 #include <string>
-#include "Entity.h"
+
 class SDL_Rect;
 class Visualisation;
-class InputManager;
 class SDL_Renderer;
 
-class SpikeBlock : public Entity
+class Entity
 {
 public:
-	SpikeBlock();
 	std::string Getname();
 	void Initialise();
+	void Uninitialise();
+	void Render();
+	void Update();
+	SDL_Rect* GetLocation();
 private:
 	int image_id;
 	SDL_Rect* ent_rect;
 	Visualisation* ent_visualisation = nullptr;
 };
-
